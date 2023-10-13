@@ -75,6 +75,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
           
       - name: Generate apk
         run: ./gradlew assembleDebug

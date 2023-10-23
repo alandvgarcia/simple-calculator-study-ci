@@ -8,9 +8,9 @@ on:
 jobs:
   create-release:
     if: |
-      github.event.pull_request.merged &&
+      ${{ github.event.pull_request.merged &&
       (github.ref == 'refs/heads/master' ||
-       github.ref == 'refs/heads/dev'
+       github.ref == 'refs/heads/dev' }}
     runs-on: ubuntu-latest
     steps:
       - name: Create Release ${{ github.event.pull_request.title }}

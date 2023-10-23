@@ -14,11 +14,9 @@ jobs:
     env:
       PRE_RELEASE: ${{ github.base_ref == 'dev' }}
 
-
-
     steps:
       - name: Create Release ${{ github.event.pull_request.title }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GH_TOKEN }}"
-          prerelease: ${{ PRE_RELEASE }}
+          prerelease: $PRE_RELEASE

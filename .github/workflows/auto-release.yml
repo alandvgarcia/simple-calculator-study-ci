@@ -1,0 +1,24 @@
+name: auto-release
+
+on:
+  pull_request:
+    types: [ closed ]
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    if: ${{ github.event.pull_request.merged &&
+        ( github.base_ref == 'master' && contains('release' , github.head_ref) }}
+    runs-on: ubuntu-latest
+
+    steps:
+     - name: Extract branch name
+       shell: bash
+       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+       id: extract_branch
+
+     - name: Create Release ${{ github.event.pull_request.title }}
+       uses: "marvinpinto/action-automatic-releases@latest"
+       with:
+         repo_token: "${{ secrets.GH_TOKEN }}"
+         automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"

@@ -9,9 +9,6 @@ jobs:
   print-branch:
     runs-on: ubuntu-latest
 
-    env:
-      PRE_RELEASE: github.base_ref == 'dev'
-
     steps:
       - name: Print branch name
         run: echo "${{ github.base_ref }} ${{ github.head_ref }}"
@@ -38,6 +35,5 @@ jobs:
         with:
           repo_token: "${{ secrets.GH_TOKEN }}"
           automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"
-          prerelease: ${{ PRE_RELEASE }}
           files: |
             outputs.changelog

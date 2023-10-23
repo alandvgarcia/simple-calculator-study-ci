@@ -3,21 +3,41 @@ name: auto-release
 on:
   pull_request:
     types: [ closed ]
-  workflow_dispatch:
 
 jobs:
-  create-release:
-    if: ${{ github.event.pull_request.merged &&
-        (github.base_ref == 'master' || github.base_ref == 'dev') }}
+
+  print-branch:
     runs-on: ubuntu-latest
 
     env:
-      PRE_RELEASE: ${{ github.base_ref == 'dev' }}
+      PRE_RELEASE: github.base_ref == 'dev'
 
     steps:
+      - name: Print branch name
+        run: echo "${{ github.base_ref }} ${{ github.head_ref }}"
+
+
+  create-release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged &&
+      ((github.base_ref == 'master' || github.base_ref == 'dev') && contains(github.head_ref, 'release')) }}
+
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: "✏️ Generate release changelog"
+        uses: heinrichreimer/action-github-changelog-generator@v2.3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
       - name: Create Release ${{ github.event.pull_request.title }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GH_TOKEN }}"
-          prerelease: ${{ env.PRE_RELEASE }}
-          automatic_release_tag: "New version from ${{ github.head_ref }}"
+          automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"
+          prerelease: ${{ PRE_RELEASE }}
+          files: |
+            outputs.changelog

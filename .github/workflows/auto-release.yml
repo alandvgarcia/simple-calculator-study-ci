@@ -7,10 +7,8 @@ on:
 
 jobs:
   create-release:
-    if: |
-      ${{ github.event.pull_request.merged &&
-      (github.ref == 'refs/heads/master' ||
-       github.ref == 'refs/heads/dev' }}
+    if: ${{ github.event.pull_request.merged &&
+        (github.ref == 'master' || github.ref == 'dev') }}
     runs-on: ubuntu-latest
     steps:
       - name: Create Release ${{ github.event.pull_request.title }}

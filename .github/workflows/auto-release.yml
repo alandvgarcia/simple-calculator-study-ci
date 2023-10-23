@@ -1,6 +1,7 @@
 name: auto-release
 
-on: [push]
+on:
+  pull_request:
 
 jobs:
 
@@ -8,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Print branch name
-      run: echo "${{github.base_ref}} ${{github.head_ref}}"
+      run: echo "${{ github.base_ref }} ${{ github.head_ref }}"
 
 
   create-release:

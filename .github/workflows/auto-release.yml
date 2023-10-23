@@ -9,10 +9,6 @@ jobs:
   print-branch:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Print branch name
-        run: echo "${{ github.base_ref }} ${{ github.head_ref }}"
-
     generate-apk:
       name: Generate apk
       runs-on: ubuntu-latest

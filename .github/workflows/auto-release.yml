@@ -2,14 +2,20 @@ name: auto-release
 
 on:
   pull_request:
-    types: [ closed ]
-  workflow_dispatch:
 
 jobs:
-  create-release:
-    if: ${{ github.event.pull_request.merged &&
-        ( github.base_ref == 'master' && contains('release' , github.head_ref)) }}
+
+  print-branch:
     runs-on: ubuntu-latest
+    steps:
+    - name: Print branch name
+      run: echo "${{ github.base_ref }} ${{ github.head_ref }}"
+
+
+  create-release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged &&
+        (github.base_ref == 'master' && contains('release' , github.head_ref)) }}
 
     steps:
      - name: Extract branch name

@@ -16,7 +16,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.merged &&
-        (github.base_ref == 'master' && contains('release' , github.head_ref)) }}
+        (github.base_ref == 'master' && contains(github.head_ref, 'release')) }}
 
     steps:
      - name: Extract branch name

@@ -20,3 +20,4 @@ jobs:
         with:
           repo_token: "${{ secrets.GH_TOKEN }}"
           prerelease: ${{ env.PRE_RELEASE }}
+          automatic_release_tag: "New version from ${{ github.head_ref }}"

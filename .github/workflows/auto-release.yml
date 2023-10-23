@@ -6,9 +6,6 @@ on:
 
 jobs:
 
-  print-branch:
-    runs-on: ubuntu-latest
-
     generate-apk:
       name: Generate apk
       runs-on: ubuntu-latest

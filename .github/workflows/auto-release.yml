@@ -2,6 +2,7 @@ name: auto-release
 
 on:
   pull_request:
+    [closed]
 
 jobs:
 

@@ -1,7 +1,6 @@
 name: auto-release
 
 on: [push]
-workflow_dispatch:
 
 jobs:
 

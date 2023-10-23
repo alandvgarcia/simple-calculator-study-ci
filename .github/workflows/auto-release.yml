@@ -8,6 +8,10 @@ jobs:
     generate-apk:
       name: Generate apk
       runs-on: ubuntu-latest
+
+      if: ${{ github.event.pull_request.merged &&
+        ((github.base_ref == 'master' || github.base_ref == 'dev') && contains(github.head_ref, 'release')) }}
+
       steps:
         - uses: actions/checkout@v1
 

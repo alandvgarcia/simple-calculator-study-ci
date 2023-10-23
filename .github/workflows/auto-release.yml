@@ -2,7 +2,7 @@ name: auto-release
 
 on:
   pull_request:
-    [closed]
+    types: [ closed ]
 
 jobs:
 

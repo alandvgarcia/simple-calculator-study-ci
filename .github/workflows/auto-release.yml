@@ -15,5 +15,4 @@ jobs:
         uses: bfren/create-release@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
-          prerelease: ${{  github.base_ref == 'dev' }}
           source: github.ref

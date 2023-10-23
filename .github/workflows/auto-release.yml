@@ -15,4 +15,3 @@ jobs:
         uses: bfren/create-release@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
-          source: ${{ github.base_ref }}

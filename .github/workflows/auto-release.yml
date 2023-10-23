@@ -8,7 +8,7 @@ on:
 jobs:
   create-release:
     if: ${{ github.event.pull_request.merged &&
-        (contains('release' ,github.base_ref) }}
+        ( github.base_ref == 'master' && contains('release' , github.head_ref) }}
     runs-on: ubuntu-latest
 
     steps:

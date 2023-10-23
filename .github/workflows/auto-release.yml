@@ -1,0 +1,21 @@
+name: auto-release
+
+on:
+  pull_request:
+    types: [ closed ]
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    if: |
+      github.event.pull_request.merged &&
+      (github.ref == 'refs/heads/master' ||
+       github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release ${{ github.event.pull_request.title }}
+        uses: bfren/create-release@v1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          prerelease: github.ref == 'refs/heads/dev'
+          source: github.ref

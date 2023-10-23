@@ -5,10 +5,6 @@ on:
     types: [ closed ]
 
 jobs:
-
-  print-branch:
-    runs-on: ubuntu-latest
-
     generate-apk:
       name: Generate apk
       runs-on: ubuntu-latest
@@ -34,30 +30,29 @@ jobs:
             path: app/build/outputs/apk/debug/app-debug.apk
 
 
-  create-release:
-    runs-on: ubuntu-latest
+    create-release:
+      runs-on: ubuntu-latest
+      needs: generate-apk
 
-    needs: generate-apk
+      if: ${{ github.event.pull_request.merged &&
+        ((github.base_ref == 'master' || github.base_ref == 'dev') && contains(github.head_ref, 'release')) }}
 
-    if: ${{ github.event.pull_request.merged &&
-      ((github.base_ref == 'master' || github.base_ref == 'dev') && contains(github.head_ref, 'release')) }}
+      steps:
+        - name: Extract branch name
+          shell: bash
+          run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          id: extract_branch
 
-    steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+        - name: "✏️ Generate release changelog"
+          uses: heinrichreimer/action-github-changelog-generator@v2.3
+          with:
+            token: ${{ secrets.GH_TOKEN }}
 
-      - name: "✏️ Generate release changelog"
-        uses: heinrichreimer/action-github-changelog-generator@v2.3
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-
-      - name: Create Release ${{ github.event.pull_request.title }}
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GH_TOKEN }}"
-          automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"
-          files: |
-            outputs.changelog
-            app/build/outputs/apk/debug/app-debug.apk
+        - name: Create Release ${{ github.event.pull_request.title }}
+          uses: "marvinpinto/action-automatic-releases@latest"
+          with:
+            repo_token: "${{ secrets.GH_TOKEN }}"
+            automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"
+            files: |
+              outputs.changelog
+              app/build/outputs/apk/debug/app-debug.apk

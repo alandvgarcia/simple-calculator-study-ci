@@ -8,16 +8,17 @@ on:
 jobs:
   create-release:
     if: ${{ github.event.pull_request.merged &&
-        (github.base_ref == 'master' || github.base_ref == 'dev') }}
+        (contains('release' ,github.base_ref) }}
     runs-on: ubuntu-latest
 
-    env:
-      PRE_RELEASE: ${{ github.base_ref == 'dev' }}
-
     steps:
-      - name: Create Release ${{ github.event.pull_request.title }}
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GH_TOKEN }}"
-          prerelease: ${{ env.PRE_RELEASE }}
-          automatic_release_tag: "New version from ${{ github.head_ref }}"
+     - name: Extract branch name
+       shell: bash
+       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+       id: extract_branch
+
+     - name: Create Release ${{ github.event.pull_request.title }}
+       uses: "marvinpinto/action-automatic-releases@latest"
+       with:
+         repo_token: "${{ secrets.GH_TOKEN }}"
+         automatic_release_tag: "${{ steps.extract_branch.outputs.branch }}"
